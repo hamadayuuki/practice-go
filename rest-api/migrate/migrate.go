@@ -6,6 +6,7 @@ import (
 	"go-rest-api/model"
 )
 
+// $ GO_ENV=dev go run migrate/migrate.go
 func main() {
 	dbConn := db.NewDB()
 	defer fmt.Println("Successfully Migrated")
