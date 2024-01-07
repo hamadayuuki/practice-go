@@ -69,7 +69,7 @@ func (uc *userController) LogOut(context echo.Context) error {
 	cookie.Expires = time.Now()
 	cookie.Path = "/"
 	cookie.Domain = os.Getenv("API_DOMAIN")
-	cookie.Secure = true
+	//cookie.Secure = true
 	cookie.HttpOnly = true
 	cookie.SameSite = http.SameSiteNoneMode
 	context.SetCookie(cookie)
