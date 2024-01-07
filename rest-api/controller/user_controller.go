@@ -1,7 +1,11 @@
 package controller
 
 import (
+	"go-rest-api/model"
 	"go-rest-api/usecase"
+	"net/http"
+	"os"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -15,7 +19,7 @@ type IUserController interface {
 // MARK: - User Controller の実体
 
 type userController struct {
-	userUsecase useCase.IUserController
+	userUsecase usecase.IUserUseCase
 }
 
 func NewUserController(userUsecase usecase.IUserUseCase) IUserController {
@@ -27,7 +31,7 @@ func (uc *userController) SignUp(context echo.Context) error {
 	if err := context.Bind(&user); err != nil {
 		return context.JSON(http.StatusBadRequest, err.Error())
 	}
-	userRes, err := uc.uu.SignUp(user)
+	userRes, err := uc.userUsecase.SignUp(user)
 	if err != nil {
 		return context.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -39,7 +43,7 @@ func (uc *userController) LogIn(context echo.Context) error {
 	if err := context.Bind(&user); err != nil {
 		return context.JSON(http.StatusBadRequest, err.Error())
 	}
-	tokenString, err := uc.uu.Login(user)
+	tokenString, err := uc.userUsecase.Login(user)
 	if err != nil {
 		return context.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -54,8 +58,8 @@ func (uc *userController) LogIn(context echo.Context) error {
 	//cookie.Secure = true
 	cookie.HttpOnly = true
 	cookie.SameSite = http.SameSiteNoneMode
-	c.SetCookie(cookie)
-	return c.NoContent(http.StatusOK)
+	context.SetCookie(cookie)
+	return context.NoContent(http.StatusOK)
 }
 
 func (uc *userController) LogOut(context echo.Context) error {

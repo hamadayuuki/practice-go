@@ -13,6 +13,9 @@ import (
 
 // DB への接続
 func NewDB() *gorm.DB {
+	// .env を使用可能に
+	err := godotenv.Load(".env")
+
 	if os.Getenv("GO_ENV") == "dev" {
 		err := godotenv.Load()
 		if err != nil {
@@ -22,6 +25,7 @@ func NewDB() *gorm.DB {
 
 	// URL をもとにDBへ接続
 	url := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PW"), os.Getenv("POSTGRES_HOST"), os.Getenv("POSTGRES_PORT"), os.Getenv("POSTGRES_DB"))
+	fmt.Println(url)
 	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 
 	if err != nil { log.Fatalln(err) }

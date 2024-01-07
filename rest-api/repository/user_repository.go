@@ -9,7 +9,7 @@ import (
 type IUserRepository interface {
 //                 引数                            戻り値
 	GetUserByEmail(user *model.User, email string) error
-	CerateUser(user *model.User) error
+	CreateUser(user *model.User) error
 }
 
 // MARK: - User Repository の実体
@@ -20,7 +20,7 @@ type userRepository struct {
 
 // DBからのDI用
 func NewUserRepository(db *gorm.DB) IUserRepository {
-	return &userRepository(db)
+	return &userRepository{db}
 }
 
 func (userRepository *userRepository) GetUserByEmail(user *model.User, email string) error {
@@ -30,7 +30,7 @@ func (userRepository *userRepository) GetUserByEmail(user *model.User, email str
 	return nil
 }
 
-func (userRepository *userRepository) CerateUser(user *model.User) error {
+func (userRepository *userRepository) CreateUser(user *model.User) error {
 	if err := userRepository.db.Create(user).Error; err != nil {   // TODO: Create() は今後実装
 		return err
 	}

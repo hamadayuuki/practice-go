@@ -22,23 +22,25 @@ type userUsecase struct {
 	userRepository repository.IUserRepository
 }
 
-func NewUserUsecase(userRepository repository.IUserRepository) IUserUsecase {
+func NewUserUsecase(userRepository repository.IUserRepository) IUserUseCase {
 	return &userUsecase{userRepository}
 }
 
 func (userUsecase *userUsecase) SignUp(user model.User) (model.UserResponse, error) {
 	// パスワードをハッシュ化
 	hashedPassword, error := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
-	if err != nil { return model.UserResponse{}, err }
+	if error != nil { return model.UserResponse{}, error }
 
 	// DB へ書きこむUserを作成
 	newUser := model.User{Email: user.Email, Password: string(hashedPassword)}
-	if err := userUsecase.userRepository.CreateUser(&newUser); err != nil { return model.UserResponse{}, err }   // TODO: CreateUser() は今後実装する
+	if err := userUsecase.userRepository.CreateUser(&newUser); err != nil {// TODO: CreateUser() は今後実装する
+		return model.UserResponse{}, err 
+	} 
 
 	// repository? へのレスポンス用のUserを作成
 	resUser := model.UserResponse{
 		ID:    newUser.ID,
-		Email: newUser.Email
+		Email: newUser.Email,
 	}
 	return resUser, nil
 }
@@ -56,7 +58,7 @@ func (userUsecase *userUsecase) Login(user model.User) (string, error) {
 
 	// JWT を発行
 	// JWT : JSON をやり取りする際のデジタル認証情報
-	toke := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims {
 		"user_id": storedUser.ID,
 		"exp"    : time.Now().Add(time.Hour * 12).Unix(),
 	})
