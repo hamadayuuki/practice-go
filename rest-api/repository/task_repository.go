@@ -6,6 +6,7 @@ import (
 	"go-rest-api/model"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type ITaskRepository interface {
@@ -60,7 +61,7 @@ func (tr *taskRepository) GetAllTasks(tasks *[]model.Task, userId uint) error {
 }
 
 func (tr *taskRepository) GetTaskById(task *model.Task, userId uint, taskId uint) error {
-	if err := tr.db.Joins("User").Where("user_id=?", userId).First(task, taksId).Error; err != nil {
+	if err := tr.db.Joins("User").Where("user_id=?", userId).First(task, taskId).Error; err != nil {
 		return err
 	}
 	return nil
@@ -71,7 +72,7 @@ func (tr *taskRepository) UpdateTask(task *model.Task, userId uint, taskId uint)
 	Clauses(clause.Returning{})
 		Model(〜) 〜がさすポインタへ結果を代入する
 	*/
-	reslt := tr.db.Model(task).Clauses(clause.Returning{}).Where("id=? AND user_id=?", taskId, userId).Update("title", task.Title)
+	result := tr.db.Model(task).Clauses(clause.Returning{}).Where("id=? AND user_id=?", taskId, userId).Update("title", task.Title)
 	if result.Error != nil { 
 		return result.Error
 	}

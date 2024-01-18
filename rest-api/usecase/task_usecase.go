@@ -1,3 +1,5 @@
+package usecase
+
 import (
 	"go-rest-api/model"
 	"go-rest-api/repository"
