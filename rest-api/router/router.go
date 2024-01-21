@@ -1,8 +1,10 @@
 package router
 
 import (
+	"os"
 	"go-rest-api/controller"
 
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 )
 
@@ -13,6 +15,10 @@ func NewRouter(uc controller.IUserController, tc controller.ITaskController) *ec
 	e.POST("/logout", uc.LogOut)
 
 	t := e.Group("/tasks")
+	t.Use(echojwt.WithConfig(echojwt.Config{
+		SigningKey: []byte(os.Getenv("SECRET")),
+		TokenLookup: "cookie:token",
+	}))
 	t.GET("", tc.GetAllTasks)
 	t.GET("/:taskId", tc.GetTaskById)
 	t.POST("", tc.CreateTask)
