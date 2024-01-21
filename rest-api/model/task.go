@@ -2,6 +2,7 @@ package model
 
 import "time"
 
+// DBとのやり取りに使用する
 type Task struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`
 	Title     string    `json:"title" gorm:"not null"`
@@ -11,6 +12,7 @@ type Task struct {
 	UserId    uint      `json:"user_id" gorm:"not null"`
 }
 
+// Usecase が Controller へ返すデータ
 type TaskResponse struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`
 	Title     string    `json:"title" gorm:"not null"`
