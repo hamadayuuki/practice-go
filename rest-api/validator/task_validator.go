@@ -7,7 +7,7 @@ import (
 )
 
 type ITaskValidator interface {
-	TaskValidate(task model.task) error
+	TaskValidate(task model.Task) error
 }
 
 // MARK: - task validator の実体
@@ -18,7 +18,7 @@ func NewTaskValidator() ITaskValidator {
 	return &taskValidator{}
 }
 
-func (tv *taskValidator) TaskValidate(task model.task) error {
+func (tv *taskValidator) TaskValidate(task model.Task) error {
 	return validation.ValidateStruct(&task,
 		// validate for Title
 		validation.Field(
