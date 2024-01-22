@@ -20,6 +20,7 @@ func NewTaskValidator() ITaskValidator {
 
 func (tv *taskValidator) TaskValidate(task model.task) error {
 	return validation.ValidateStruct(&task,
+		// validate for Title
 		validation.Field(
 			&task.Title,
 			validation.Required.Error("title is required"),   // 値が格納されているか
