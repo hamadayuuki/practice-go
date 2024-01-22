@@ -3,6 +3,7 @@ package usecase
 import (
 	"go-rest-api/model"
 	"go-rest-api/repository"
+	"go-rest-api/validator"
 	"os"
 	"time"
 
@@ -20,13 +21,18 @@ type IUserUseCase interface {
 
 type userUsecase struct {
 	userRepository repository.IUserRepository
+	userValidator validator.IUserValidator
 }
 
-func NewUserUsecase(userRepository repository.IUserRepository) IUserUseCase {
-	return &userUsecase{userRepository}
+func NewUserUsecase(userRepository repository.IUserRepository, userValidator validator.IUserValidator) IUserUseCase {
+	return &userUsecase{userRepository, userValidator}
 }
 
 func (userUsecase *userUsecase) SignUp(user model.User) (model.UserResponse, error) {
+	if err := userUsecase.userValidator.UserValidate(user); err != nil {
+		return model.UserResponse{}, err
+	}
+
 	// パスワードをハッシュ化
 	hashedPassword, error := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if error != nil { return model.UserResponse{}, error }
@@ -46,6 +52,10 @@ func (userUsecase *userUsecase) SignUp(user model.User) (model.UserResponse, err
 }
 
 func (userUsecase *userUsecase) Login(user model.User) (string, error) {
+	if err := userUsecase.userValidator.UserValidate(user); err != nil {
+		return "", err
+	}
+
 	// storedUser は初期化しているだけではないのか？ データが格納されているのか？ されていない場合CompareHashAndPassword() で何を比較しているのか
 	storedUser := model.User{}   // 初期化
 	if err := userUsecase.userRepository.GetUserByEmail(&storedUser, user.Email); err != nil {   // TODO: GetUserByEmail() は今後実装する
