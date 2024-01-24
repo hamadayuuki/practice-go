@@ -3,6 +3,7 @@ package router
 import (
 	"os"
 	"go-rest-api/controller"
+	"net/http"
 
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -20,7 +21,7 @@ func NewRouter(uc controller.IUserController, tc controller.ITaskController) *ec
 			echo.HeaderContentType, 
 			echo.HeaderAccept,
 			echo.HeaderAccessControlAllowHeaders, 
-			echo.HeaderXCRFToken 
+			echo.HeaderXCSRFToken,
 		},
 		AllowMethods: []string { "GET", "PUT", "POST", "DELETE" },
 		AllowCredentials: true,
@@ -35,6 +36,8 @@ func NewRouter(uc controller.IUserController, tc controller.ITaskController) *ec
 		CookieSameSite: http.SameSiteDefaultMode,
 		//CookieMaxAge: 60,
 	}))
+
+	e.GET("/csrf", uc.CsrfToken)
 
 	e.POST("/signup", uc.SignUp)
 	e.POST("/login", uc.LogIn)

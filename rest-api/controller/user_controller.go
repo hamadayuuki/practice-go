@@ -14,6 +14,9 @@ type IUserController interface {
 	SignUp(context echo.Context) error
 	LogIn(context echo.Context) error
 	LogOut(context echo.Context) error
+
+	// middleware
+	CsrfToken(context echo.Context) error
 }
 
 // MARK: - User Controller の実体
@@ -76,3 +79,9 @@ func (uc *userController) LogOut(context echo.Context) error {
 	return context.NoContent(http.StatusOK)
 }
 
+func (uc *userController) CsrfToken(c echo.Context) error {
+	token := c.Get("csrf").(string)
+	return c.JSON(http.StatusOK, echo.Map {
+		"csrf_token": token,
+	})
+}
