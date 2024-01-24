@@ -14,6 +14,9 @@ type IUserController interface {
 	SignUp(context echo.Context) error
 	LogIn(context echo.Context) error
 	LogOut(context echo.Context) error
+
+	// middleware
+	CsrfToken(context echo.Context) error
 }
 
 // MARK: - User Controller の実体
@@ -55,7 +58,7 @@ func (uc *userController) LogIn(context echo.Context) error {
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	cookie.Path = "/"
 	cookie.Domain = os.Getenv("API_DOMAIN")
-	//cookie.Secure = true
+	cookie.Secure = true
 	cookie.HttpOnly = true
 	cookie.SameSite = http.SameSiteNoneMode
 	context.SetCookie(cookie)
@@ -69,10 +72,16 @@ func (uc *userController) LogOut(context echo.Context) error {
 	cookie.Expires = time.Now()
 	cookie.Path = "/"
 	cookie.Domain = os.Getenv("API_DOMAIN")
-	//cookie.Secure = true
+	cookie.Secure = true
 	cookie.HttpOnly = true
 	cookie.SameSite = http.SameSiteNoneMode
 	context.SetCookie(cookie)
 	return context.NoContent(http.StatusOK)
 }
 
+func (uc *userController) CsrfToken(c echo.Context) error {
+	token := c.Get("csrf").(string)
+	return c.JSON(http.StatusOK, echo.Map {
+		"csrf_token": token,
+	})
+}
