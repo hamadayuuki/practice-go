@@ -2,7 +2,7 @@ export type Task = {
     id: number
     title: string
     created_at: Date
-    updated_ata: Date
+    updated_at: Date
 }
 
 export type CsrfToken = {
