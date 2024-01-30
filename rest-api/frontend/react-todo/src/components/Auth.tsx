@@ -35,14 +35,18 @@ export const Auth = () => {
 
     return (
         <div className="flex justify-center items-center flex-col min-h-screen text-gray-600 font-mono">
+          {/* タイトル */}
           <div className="flex items-center">
             <CheckBadgeIcon className="h-8 w-8 mr-2 text-blue-500" />
             <span className="text-center text-3xl font-extrabold">
               Todo app by React/Go(Echo)
             </span>
           </div>
+
           <h2 className="my-6">{isLogin ? 'Login' : 'Create a new account'}</h2>
+
           <form onSubmit={submitAuthHandler}>
+            {/* Email 入力 */}
             <div>
               <input
                 className="mb-3 px-3 text-sm py-2 border border-gray-300"
@@ -54,6 +58,8 @@ export const Auth = () => {
                 value={email}
               />
             </div>
+
+            {/* Password 入力 */}
             <div>
               <input
                 className="mb-3 px-3 text-sm py-2 border border-gray-300"
@@ -64,6 +70,8 @@ export const Auth = () => {
                 value={pw}
               />
             </div>
+
+            {/* Login/Signup ボタン */}
             <div className="flex justify-center my-2">
               <button
                 className="disabled:opacity-40 py-2 px-4 rounded text-white bg-indigo-600"
@@ -74,6 +82,7 @@ export const Auth = () => {
               </button>
             </div>
           </form>
+
           <ArrowPathIcon
             onClick={() => setIsLogin(!isLogin)}
             className="h-6 w-6 my-2 text-blue-500 cursor-pointer"
