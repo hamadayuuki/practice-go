@@ -32,7 +32,7 @@ export const useMutateTask = () => {
     )
 
     const updateTaskMutation = useMutation(
-        (task: Omit<Task, 'created_at' | 'updated_at'>) => axios.post<Task>(`${process.env.REACT_APP_API_URL}/tasks/${task.id}`, {
+        (task: Omit<Task, 'created_at' | 'updated_at'>) => axios.put<Task>(`${process.env.REACT_APP_API_URL}/tasks/${task.id}`, {
             title: task.title,
         }), {
             onSuccess: (res, variables) => {
@@ -59,7 +59,7 @@ export const useMutateTask = () => {
     )
 
     const deleteTaskMutation = useMutation(
-        (id: number) => axios.post<Task>(`${process.env.REACT_APP_API_URL}/tasks/${id}`), {
+        (id: number) => axios.delete<Task>(`${process.env.REACT_APP_API_URL}/tasks/${id}`), {
             onSuccess: (_, variables) => {
                 // キャッシュの tasksデータ を確認
                 const previsiousTasks = queryClient.getQueryData<Task[]>(['tasks'])
